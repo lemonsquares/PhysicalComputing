@@ -1,0 +1,54 @@
+/*
+ Project Name: If Statements
+ Date: 9/24/2019
+ Class: Physical Computing DIGF-2002-1
+ Name: Giulia Zefilippo
+ Resources: In-class
+ */
+
+void setup() {
+  pinMode(9, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(3, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  Serial.println(analogRead(0));
+  if (analogRead(0) > 800) { // If more than, turn off
+    analogWrite(9, 0);
+    analogWrite(6, 0);
+    analogWrite(3, 0);
+
+  } else if (analogRead(0) < 799 && analogRead(0) > 300) { //if less than 799 and more than 300, fade/turn off and turn on next light
+    delay(600);
+    analogWrite(9, 500); //fading
+    delay(600);
+    analogWrite(9, 200); //fading
+    delay(600);
+    analogWrite(9, 50); //fading
+    delay(600);
+    analogWrite(9, 0); //turn off blue light
+    delay(200);
+    analogWrite(6, 500); //fading
+    delay(600);
+    analogWrite(6, 200); //fading
+    delay(600);
+    analogWrite(6, 50); //fading
+    delay(600);
+    analogWrite(6, 0);//fading
+
+  } else if (analogRead(0) < 299 && analogRead(0) > 150) { //If less than 299 and more than 150, turn off/turn on next light
+    analogWrite(6, 5); //dim green light
+    delay(600);
+    analogWrite(6, 0); //turn off green light
+    delay(600);
+    analogWrite(3, 500); //turn on red light
+    delay(600);
+    analogWrite(3, 200); //fading
+    delay(600);
+    analogWrite(3, 50); //fading
+    delay(600);
+    analogWrite(3, 0); //turn off red light
+  }
+}
