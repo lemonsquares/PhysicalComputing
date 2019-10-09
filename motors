@@ -1,0 +1,29 @@
+/*
+  Project Name: Motors
+  Date: 10/8/2019
+  Class: Physical Computing DIGF-2002-1
+  Name: Giulia Zefilippo
+  Resources: In-class and previous lessons
+*/
+
+#include <Servo.h> //include library
+Servo myservo; //new servo object
+int pos = 0; // store position
+
+void setup() {
+  myservo.attach(9); // attaches the servo on pin 9
+  Serial.begin(9600);
+}
+
+void loop() {
+  Serial.println(analogRead(0)); //confirm the photocell is sensing different values of light.
+  if (analogRead(0) > 900) { // if photocell senses light higher than 900, it turns to 90 degrees
+    myservo.write(90); // 90 degree
+    delay(1000);
+  } else if (analogRead(0) < 899 && analogRead(0) > 300) { // if photocell senses light between 899 and 300, move the servo arm back & forth between 180 and 0 degrees.
+    myservo.write(180); // 180 degree
+    delay(1000);
+    myservo.write(0); // 0 degree
+    delay(1000);
+}
+}
