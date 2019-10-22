@@ -3,7 +3,7 @@
   Date: 10/21/2019
   Class: Physical Computing DIGF-2002-1
   Name: Giulia Zefilippo
-  Resources: Arduino Website
+  Resources: https://www.arduino.cc/en/tutorial/fading
 */
 
 int sensorPin = A0;
