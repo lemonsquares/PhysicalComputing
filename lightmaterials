@@ -1,0 +1,79 @@
+/*
+  Project Name: LIGHT AND MATERIALS
+  Date: 10/21/2019
+  Class: Physical Computing DIGF-2002-1
+  Name: Giulia Zefilippo
+  Resources: Arduino Website
+*/
+
+int sensorPin = A0;
+int wPin = 3;
+int bPin = 5;
+int rPin = 6;
+int uvPin = 9;
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(wPin, OUTPUT); // WHITE
+  pinMode(bPin, OUTPUT); // BLUE
+  pinMode(rPin, OUTPUT); // RED
+  pinMode(uvPin, OUTPUT); // UV
+  pinMode(sensorPin, INPUT); //photocell
+}
+void loop() {
+  Serial.println(analogRead(0)); // print in serial monitor
+  
+  // LEDs start in off mode
+  analogWrite(9, LOW);
+  analogWrite(6, LOW);
+  analogWrite(3, LOW);
+  analogWrite(5, LOW);
+
+  // Stated value of photocell
+  int lightValue = 60; 
+  
+  // constant loop of lights fading up
+  for (int fadeValue = 0; fadeValue < 255; fadeValue += 5)
+  {
+    // If photocell is less than the stated value, turn on Red and UV LEDs
+    if (analogRead(0) < lightValue)
+    {
+      analogWrite(9, fadeValue);
+      analogWrite(6, fadeValue);
+      analogWrite(3, LOW);
+      analogWrite(5, LOW);
+    }
+    // Otherwise, turn on Blue and White LEDs
+    else 
+    {
+      analogWrite(3, fadeValue);
+      analogWrite(5, fadeValue);
+      analogWrite(6, LOW);
+      analogWrite(9, LOW);
+    }
+    delay(50);
+  }
+
+  // constant loop of lights fading down
+  for (int fadeValue = 255; fadeValue > 0; fadeValue -= 5)
+  {
+    // If photocell is less than the stated value, turn on Red/UV LEDs and turn off White/Blue LEDs
+    if (analogRead(0) < lightValue)
+    {
+      analogWrite(9, fadeValue);
+      analogWrite(6, fadeValue);
+      analogWrite(3, LOW);
+      analogWrite(5, LOW);
+    }
+    // Otherwise, turn on Blue/White LEDs and turn off Red/UV LEDs
+    else
+    {
+      analogWrite(3, fadeValue);
+      analogWrite(5, fadeValue);
+      analogWrite(6, LOW);
+      analogWrite(9, LOW);
+    }
+    delay(50);
+  }
+}
