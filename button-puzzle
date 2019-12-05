@@ -1,0 +1,167 @@
+/*
+  Project Name: Escape Puzzle
+  Date: 12/3/2019
+  Class: Physical Computing DIGF-2002-1
+  Name: Giulia Zefilippo
+  Resources: Arduino website
+  https://youtu.be/jYOYgU2vlSE
+*/
+#include <Servo.h> // include servo library
+
+/*Creating a custom class just for debouncing multiple buttons easily
+ * It fixes latency and noise between button presses.
+ */
+class DebouncedButton
+{
+  public:
+    DebouncedButton(int setInputPin) // constructor
+    {
+      inputPinNo = setInputPin; // store the button pins to get input from
+    }
+    void updateState() // read each button pin and update the state if changed
+    {
+      int newState = digitalRead(inputPinNo);
+      if (newState != currentState)
+      {
+        previousState = currentState;
+        currentState = newState;
+      }
+    };
+    /* function that is called to see if the button has been pressed,
+     * return true on press and false on no press.
+     */
+    boolean checkPressed() 
+    { // button is pressed when the button is released
+      if ((previousState == HIGH) && (currentState == LOW))  
+      {
+        previousState = LOW;
+        return true; //press
+      }
+      return false; //no press
+    };
+
+  private:
+    
+    int inputPinNo = 0; // the button input pin
+    int currentState = false; //this are used to record the changing state of the button
+    int previousState = false; //this are used to record the changing state of the button
+};
+Servo servoLock;
+// starting position of servo motor
+int pos = 180;
+
+// Button pins will be constant and non-changing
+const int button1Pin = 13;
+const int button2Pin = 12;
+const int button3Pin = 11;
+const int button4Pin = 10;
+
+// The state of the buttons will start off in off position.
+boolean button1State = LOW;
+boolean button2State = LOW;
+boolean button3State = LOW;
+boolean button4State = LOW;
+
+// The button counters will start at zero
+int counter1 = 0;
+int counter2 = 0;
+int counter3 = 0;
+int counter4 = 0;
+
+// To set which pins to use for Debounce
+DebouncedButton button1(button1Pin);
+DebouncedButton button2(button2Pin);
+DebouncedButton button3(button3Pin);
+DebouncedButton button4(button4Pin);
+
+
+void checkConditions() { // created a separate function to check the condition of the counters
+  
+  /* Testing the buttons separately:
+    //Button one
+    if (counter1 == 7)
+    {
+     Serial.println("button1");
+     delay(15);
+    }
+    // button two
+    if (counter2 == 5)
+    {
+     Serial.println("button2");
+     delay(15);
+    }
+    //button three
+    if (counter3 == 6)
+    {
+     Serial.println("button3");
+     delay(15);
+     }
+    // button four
+    if (counter4 == 5)
+    {
+     Serial.println("button4");
+     delay(15);
+    }*/
+
+  /* If the certain button is pressed a target amount:
+      serial print and move servo motor to unlock */
+  if (counter1 == 7 && counter2 == 5 && counter3 == 6 && counter4 == 5)
+  {
+    Serial.println("unlock");
+    servoLock.write(0);
+    delay(10);
+  }
+  /* If the button counters reach more than their targets: 
+   *  serial print reset and run the puzzleReset class */
+  else if (counter1 > 8 || counter2 > 5 || counter3 > 6 || counter4 > 5) {
+    Serial.println("Reset");
+    delay(1000);
+    puzzleReset();
+  }
+}
+void setup() {
+  servoLock.attach(9); // set up pin for servo motor
+  servoLock.write(pos); // set motor in startup position
+  pinMode(button1Pin, INPUT);
+  pinMode(button2Pin, INPUT);
+  pinMode(button3Pin, INPUT);
+  pinMode(button4Pin, INPUT);
+  Serial.begin(9600);
+}
+void loop() {
+  // updates the state of the buttons (either pressed or not pressed) based on reading of the pin at the start of the loop
+  button1.updateState();
+  button2.updateState();
+  button3.updateState();
+  button4.updateState();
+
+  // Checks if the buttons have been pressed: if it has, add by one to the counter.
+  if (button1.checkPressed())
+  {
+    counter1++;
+  }
+
+  if (button2.checkPressed())
+  {
+    counter2++;
+  }
+
+  if (button3.checkPressed())
+  {
+    counter3++;
+  }
+
+  if (button4.checkPressed())
+  {
+    counter4++;
+  }
+
+  checkConditions(); // Run the checkConditions function
+}
+void puzzleReset() // Resets the counters of the buttons
+{
+  counter1 = 0;
+  counter2 = 0;
+  counter3 = 0;
+  counter4 = 0;
+}
